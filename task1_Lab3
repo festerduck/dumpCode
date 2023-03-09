@@ -1,0 +1,122 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+using namespace std;
+
+struct pen
+{
+	string color ;
+	int id;
+	int qty = 0;
+	int cost;
+	pen* nptr;
+};
+
+
+pen* fptr = NULL;
+pen* currentPtr;
+
+//Funcion Prototypes
+int addPen();
+int checkNode(string color);
+string colorConvert();
+
+//Global Variables
+int node = 0;
+string tempColor;
+int main()
+{
+	int option;
+	while (1)
+	{
+		cout
+			<< "Select your choice: " << endl
+			<< "1. Add Pen" << endl
+			<< "2. Sell Pen" << endl
+			<< "3. Display stock" << endl;
+		cin >> option;
+		cin.clear();
+		cin.ignore();
+		switch (option)
+		{
+		case 1:
+		{
+			addPen();
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	
+}
+
+int addPen()
+{
+	int tempQuantity = 0;
+	cout << "Add a Pen" << endl;
+	cout << endl << "Enter Color: " << endl;
+	tempColor = colorConvert();
+	checkNode(tempColor);
+	cout << "Enter Quantity: " << endl;
+	cin >> tempQuantity;
+	
+	if (currentPtr == NULL)
+	{
+		cout << "Enter Cost" << endl;
+		int tempCost = 0;
+		cin >> tempCost;
+		pen* ptr = new pen;
+		ptr->nptr = NULL;
+		ptr->qty = tempQuantity;
+		ptr->cost = tempCost;
+		if (fptr == NULL)
+		{
+			fptr = ptr;
+		}
+		else
+		{
+			currentPtr = fptr;
+			while (currentPtr->nptr!=NULL)
+			{
+				currentPtr = currentPtr->nptr;
+			}
+			currentPtr->nptr = ptr;
+		}
+	}
+	else
+	{
+		currentPtr->qty += tempQuantity;
+		cout << currentPtr->qty;
+	}
+	
+
+	return 0;
+}
+int checkNode(string color)
+{
+
+	currentPtr = fptr;
+	while (currentPtr != NULL)
+	{
+		cout << currentPtr;
+		if (currentPtr->color == color)
+			break;
+		currentPtr = currentPtr->nptr;
+	}
+	return 0;
+}
+
+
+string colorConvert()
+{
+	string takeColor;
+	cin >> takeColor;
+	for (int i = 0; takeColor[i] != '\0'; i++)
+	{
+		takeColor[i] = tolower(takeColor[i]);
+	}
+	cout << takeColor;
+	return takeColor;
+	
+}
