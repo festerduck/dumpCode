@@ -1,133 +1,157 @@
 #include <iostream>
-#include <stdlib.h>
 using namespace std;
 
-struct items
+struct inventoryItem
 {
-	int item_id = 0;
-	string name;
+	string itemName;
+	int itemId = 0;
 	int qty = 0;
-	float price = 0.0;
-	items* nptr;
+	float pricePerItem;
+	inventoryItem* nptr;
 };
-items* fptr = NULL;
 
-void newLine()
-{
-	cout << endl << "<<----------------------------------------------------->>" << endl;
-}
+inventoryItem* fptr = NULL;
+inventoryItem* currentPtr;
 
-int addItem();
-int addNode(int localId);
-void newData(items *ptr);
-void display();
+
+
+int addInventory();
+int addInventoryItem();
+int checkId(int id);
+int displayInventory();
+
+int index = 0;
+
 int main()
 {
+
 	while (1)
 	{
-		newLine();
-		cout << "Choose from the following options: " << endl;
-		cout << "1- Add Item in the inventory" << endl
-			<< "2- Display All Items in the Inventory" << endl
-			<< "5- Clear Screen" << endl;
-		int opt;
-		cin >> opt;
-		switch (opt)
+		cout
+			<< "1- Add Inventry Item. " << endl
+			<< "2- Sell Inventor Item. " << endl
+			<< "3- Remove Inventory Item" << endl
+			<< "4- Display All Stock in the Inventory" << endl;
+		int option;
+		cin >> option;
+		cin.ignore();
+		cin.clear();
+		switch (option)
 		{
 		case 1:
 		{
-			addItem();
-			system("CLS");
+			addInventoryItem();
 			break;
 		}
-		case 2:
+		case 4:
 		{
-			display();
-			break;
-		}
-		case 5: 
-		{
-			system("CLS");
+			displayInventory();
 			break;
 		}
 		default:
 			break;
 		}
-	//	newLine();
 	}
 }
 
-int addItem()
+
+int addInventoryItem()
 {
-	int localId, flag = 0;
-	cout << "Adding Items" << endl << "Enter Local Id: ";
+	inventoryItem* localPtr = fptr;
+	int localQty = 0, localId = 0, localCheck = 0;
+	float localPrice = 0.0;
+	string localItemName;
+	cout << endl << "Enter Item Id: ";
 	cin >> localId;
-	items* checkPtr = fptr;
+	localCheck = checkId(localId);
+	if (localCheck == 0)
+	{
+		addInventory();
+		if (index == 0)
+		{
+			localPtr = fptr;
+		}
+		else if(index == 1)
+		{
+			localPtr = currentPtr;
+		}
+		localPtr->itemId = localId;
+		cout << "Enter Item Name: ";
+		cin >> localItemName;
+		localPtr->itemName = localItemName;
+		cout << endl << "Enter Quantity: ";
+		cin >> localQty;
+		localPtr->qty += localQty;
+		cout << endl << "Enter Price of the Item: ";
+		cin >> localPrice;
+		localPtr->pricePerItem = localPrice;
+	}
+	else if (localCheck == 1)
+	{
+		cout << endl << "Enter Quantity: ";
+		cin >> localQty;
+		localPtr = currentPtr;
+		localPtr->qty += localQty;
+	}
+
+	return 0;
+}
+
+int checkId(int id)
+{
+	inventoryItem* checkPtr = fptr;
 	while (checkPtr != NULL)
 	{
-		if (checkPtr->item_id == localId)
+		if (checkPtr->itemId == id)
 		{
-			cout << "Item Exists as: " << checkPtr->name << endl << "Enter Quantity: " << endl;
-			cin >> checkPtr->qty;
-			flag = 1;
-			break;
+			cout << "Item Exists." << endl;
+			currentPtr = checkPtr;
+			return 1;
 		}
 		checkPtr = checkPtr->nptr;
 	}
-	if (flag == 0)
-	{
-		addNode(localId);
-	}
+	cout << "Item Does Not Exist. Add Item Details." << endl;
 	return 0;
-
 }
-int addNode(int localId)
+
+int addInventory()
 {
-	items* ptr = new items;
-	ptr->item_id = localId;
+	inventoryItem* ptr = new inventoryItem;
+	ptr->nptr = NULL;
 	if (fptr == NULL)
 	{
-		newData(ptr);
 		fptr = ptr;
-		ptr->nptr = NULL;
+		cout << "FPTR";
+		index = 0;
 	}
 	else
 	{
-		items* currentPtr = fptr;
+		currentPtr = fptr;
 		while (currentPtr->nptr != NULL)
 		{
 			currentPtr = currentPtr->nptr;
 		}
-		newData(ptr);
 		currentPtr->nptr = ptr;
-		ptr->nptr = NULL;
+		cout << "Current";
+		index = 1;
 	}
-	return 1;
-}
-void newData(items *ptr)
-{
-	int localQuantity = 0;
-	cout << "Enter Name of the Item: " << endl;
-	cin >> ptr->name;
-	cout << "Enter Quantity of " << ptr->name  << endl;
-	cin >> localQuantity;
-	ptr->qty = ptr->qty + localQuantity;
-	cout << "Enter the Price of " << ptr->name << endl;
-	cin >> ptr->price;
+
+	return 0;
 }
 
-void display()
+
+int displayInventory()
 {
-	system("CLS");
-	newLine();
-	cout << endl << "[------ DISPLAYNG ALL ITEMS IN THE INVENTORY ------]" << endl;
-	items* displayPtr = fptr;
-	while (displayPtr != NULL)
+	inventoryItem* displayAllItem;
+	displayAllItem = fptr;
+	while (displayAllItem != NULL)
 	{
-		cout << "\tId = " << displayPtr->item_id << endl
-			<< "\tName of the Items: " << displayPtr->name << endl
-			<< "\tQuantity of " << displayPtr->name << ": " << displayPtr->qty << endl
-			<< "\tPrice of " << displayPtr->name << ": " << displayPtr->price << endl;
-		displayPtr = displayPtr->nptr;
+		cout
+			<< "Item Name: " << displayAllItem->itemName << endl
+			<< "Item Id: " << displayAllItem->itemId << endl
+			<< "Item Quantity: " << displayAllItem->qty << endl
+			<< "Item Price: " << displayAllItem->pricePerItem << endl;
+		displayAllItem = displayAllItem->nptr;
 	}
+	return 0;
 }
