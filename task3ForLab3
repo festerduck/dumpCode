@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
 struct computePay
@@ -28,6 +29,10 @@ employeeData* fptr = NULL;
 string localId;
 int index = 1;
 
+void newLine()
+{
+	cout << "<<<----------------------------------------------------->>>" << endl;
+}
 void enterData();
 int checkId();
 int addNode();
@@ -38,8 +43,10 @@ int main()
 {
 	while (1)
 	{
+		newLine();
 		index = 0;
-		cout << "1. Enter Employee Data" << endl
+		cout 
+			<< "1. Enter Employee Data" << endl
 			<< "2. Check existence of Employee in database(Search by Emp Id)" << endl
 			<< "3. Compute the Allowances and Net Pay of Employee(User to enter Emp Id)" << endl
 			<< "4. Show entire database(Display all records)" << endl;
@@ -56,12 +63,19 @@ int main()
 		}
 		case 2:
 		{
-			checkId();
+			if (checkId() == 0)
+			{
+				cout << "Employee Not Found." << endl;
+				system("PAUSE");
+				system("CLS");
+			}
 			break;
 		}
 		case 3:
 		{
 			computeNet();
+			system("PAUSE");
+			system("CLS");
 			break;
 		}
 		case 4:
@@ -72,11 +86,13 @@ int main()
 		default:
 			break;
 		}
+		//newLine();
 	}
 }
 void enterData()
 {
-	int idReturn = 1;
+	cout << "<<--------------ENTERING EMPLOYEE DATA-------------->>" << endl;
+	int idReturn = 1, flag = 0;
 	idReturn = checkId();
 	if (idReturn == 0)
 	{
@@ -90,6 +106,7 @@ void enterData()
 		cin >> ptr->phone;
 		cout << endl << "Enter Employee Basic Pay: ";
 		cin >> ptr->basicSalary;
+		flag = 1;
 		cin.clear();
 		cin.ignore();
 		cout << endl;
@@ -110,24 +127,32 @@ void enterData()
 			ptr->nptr = NULL;
 		}
 	}
+	if (flag == 1)
+	{
+		cout << "Data has been Successfully Entered." << endl;
+		newLine();
+	}
+	system("PAUSE");
+	system("CLS");
 }
 int checkId()
 {
+	int flag = 0;
 	cout << "Enter Employee ID: ";
 	cin >> localId;
 	employeeData* checkPtr = fptr;
 	while (checkPtr != NULL)
 	{
-		
 		if (checkPtr->employee_id == localId)
 		{
-			cout << endl << "Employee Exists as: " << checkPtr->employee_name << endl;
+			cout << "Employee Exists As: " << checkPtr->employee_name << endl;
+			
 			return 1;
 		}
 		checkPtr = checkPtr->nptr;
+		flag++;
 		index++;
 	}
-	cout << "Employee not found." << endl;
 	return 0;
 }
 
@@ -136,14 +161,10 @@ int computeNet()
 	int idCheck = checkId(), count = 0;
 	if (idCheck == 0)
 	{
+		cout << "Employee not found." << endl;
 		return 0;
 	}
 	employeeData* computePtr = fptr;
-	/*while (count < index)
-	{
-		computePtr = computePtr->nptr;
-		count++;
-	}*/
 	while (computePtr != NULL)
 	{
 		computePtr->netPay.medicalAllow = 0.05 * computePtr->basicSalary;
@@ -177,6 +198,8 @@ int displayPay()
 		}
 		computePtr = computePtr->nptr;
 	}
+	system("PAUSE");
+	system("CLS");
 	return 0;
 	
 }
@@ -195,5 +218,7 @@ int displayData()
 		cout << "++++++++++++++++++++++++++++++++++++++++++++" << endl;
 		displayPtr = displayPtr->nptr;
 	}
+	system("PAUSE");
+	system("CLS");
 	return 0;
 }
