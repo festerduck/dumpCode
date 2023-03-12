@@ -1,29 +1,44 @@
 #include <iostream>
 using namespace std;
 
+struct computePay
+{
+	float
+		medicalAllow = 0.0,
+		houseRent = 0.0,
+		conveyAllow = 0.0,
+		payNet = 0.0;
+};
+
 struct employeeData
 {
 	string
 		employee_id,
 		employee_name,
 		address,
-		phone,
+		phone;
+	float	
 		basicSalary;
+	computePay netPay;
 	employeeData* nptr;
 };
 
 employeeData* fptr = NULL;
 
+string localId;
+int index = 1;
 
 void enterData();
-int checkId(string id);
+int checkId();
 int addNode();
 int displayData();
-
+int computeNet();
+int displayPay();
 int main()
 {
 	while (1)
 	{
+		index = 0;
 		cout << "1. Enter Employee Data" << endl
 			<< "2. Check existence of Employee in database(Search by Emp Id)" << endl
 			<< "3. Compute the Allowances and Net Pay of Employee(User to enter Emp Id)" << endl
@@ -39,6 +54,21 @@ int main()
 			enterData();
 			break;
 		}
+		case 2:
+		{
+			checkId();
+			break;
+		}
+		case 3:
+		{
+			computeNet();
+			break;
+		}
+		case 4:
+		{
+			displayData();
+			break;
+		}
 		default:
 			break;
 		}
@@ -46,11 +76,8 @@ int main()
 }
 void enterData()
 {
-	string localId;
-	cout << "Enter Employee ID: ";
-	cin >> localId;
 	int idReturn = 1;
-	idReturn = checkId(localId);
+	idReturn = checkId();
 	if (idReturn == 0)
 	{
 		employeeData* ptr = new employeeData;
@@ -59,8 +86,14 @@ void enterData()
 		cin >> ptr->employee_name;
 		cout << endl << "Enter Employee Address: ";
 		cin >> ptr->address;
-		cout << "Enter Employee Phone: ";
+		cout << endl << "Enter Employee Phone: ";
 		cin >> ptr->phone;
+		cout << endl << "Enter Employee Basic Pay: ";
+		cin >> ptr->basicSalary;
+		cin.clear();
+		cin.ignore();
+		cout << endl;
+
 		if (fptr == NULL)
 		{
 			ptr->nptr = NULL;
@@ -78,18 +111,89 @@ void enterData()
 		}
 	}
 }
-int checkId(string id)
+int checkId()
 {
+	cout << "Enter Employee ID: ";
+	cin >> localId;
 	employeeData* checkPtr = fptr;
 	while (checkPtr != NULL)
 	{
-		if (checkPtr->employee_id == id)
+		
+		if (checkPtr->employee_id == localId)
 		{
 			cout << endl << "Employee Exists as: " << checkPtr->employee_name << endl;
 			return 1;
 		}
 		checkPtr = checkPtr->nptr;
+		index++;
 	}
 	cout << "Employee not found." << endl;
+	return 0;
+}
+
+int computeNet()
+{
+	int idCheck = checkId(), count = 0;
+	if (idCheck == 0)
+	{
+		return 0;
+	}
+	employeeData* computePtr = fptr;
+	/*while (count < index)
+	{
+		computePtr = computePtr->nptr;
+		count++;
+	}*/
+	while (computePtr != NULL)
+	{
+		computePtr->netPay.medicalAllow = 0.05 * computePtr->basicSalary;
+		computePtr->netPay.houseRent = 0.45 * computePtr->basicSalary;
+		computePtr->netPay.conveyAllow = 0.10 * computePtr->basicSalary;
+		computePtr->netPay.payNet =
+			computePtr->basicSalary +
+			computePtr->netPay.medicalAllow +
+			computePtr->netPay.houseRent +
+			computePtr->netPay.conveyAllow;
+		computePtr = computePtr->nptr;
+	}
+	displayPay();
+	return 0;
+}
+
+int displayPay()
+{
+	employeeData* computePtr = fptr;
+	while (computePtr != NULL)
+	{
+		if (computePtr->employee_id == localId)
+		{
+			cout << "Employee ID: " << computePtr->employee_id << endl
+				<< "Basic Salary: " << computePtr->basicSalary << endl
+				<< "\tMedical Allowance: " << computePtr->netPay.medicalAllow << endl
+				<< "\tHouse Rent: " << computePtr->netPay.houseRent << endl
+				<< "\tConveyance Allowance: " << computePtr->netPay.conveyAllow << endl
+				<< "\tNET SALARY OF THE EMPLOYEE: " << computePtr->netPay.payNet << endl;
+			return 1;
+		}
+		computePtr = computePtr->nptr;
+	}
+	return 0;
+	
+}
+
+int displayData()
+{
+	employeeData* displayPtr = fptr;
+	while (displayPtr != NULL)
+	{
+		cout
+			<< "\tEmployee ID: " << displayPtr->employee_id << endl
+			<< "\tEmployee Name: " << displayPtr->employee_name << endl
+			<< "\tEployee Adress: " << displayPtr->address << endl
+			<< "\tEmployee Phone: " << displayPtr->phone << endl
+			<< "\tEmployee Basic Salary: " << displayPtr->basicSalary << endl;
+		cout << "++++++++++++++++++++++++++++++++++++++++++++" << endl;
+		displayPtr = displayPtr->nptr;
+	}
 	return 0;
 }
