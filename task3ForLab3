@@ -1,0 +1,95 @@
+#include <iostream>
+using namespace std;
+
+struct employeeData
+{
+	string
+		employee_id,
+		employee_name,
+		address,
+		phone,
+		basicSalary;
+	employeeData* nptr;
+};
+
+employeeData* fptr = NULL;
+
+
+void enterData();
+int checkId(string id);
+int addNode();
+int displayData();
+
+int main()
+{
+	while (1)
+	{
+		cout << "1. Enter Employee Data" << endl
+			<< "2. Check existence of Employee in database(Search by Emp Id)" << endl
+			<< "3. Compute the Allowances and Net Pay of Employee(User to enter Emp Id)" << endl
+			<< "4. Show entire database(Display all records)" << endl;
+		int opt;
+		cin >> opt;
+		cin.clear();
+		cin.ignore();
+		switch (opt)
+		{
+		case 1:
+		{
+			enterData();
+			break;
+		}
+		default:
+			break;
+		}
+	}
+}
+void enterData()
+{
+	string localId;
+	cout << "Enter Employee ID: ";
+	cin >> localId;
+	int idReturn = 1;
+	idReturn = checkId(localId);
+	if (idReturn == 0)
+	{
+		employeeData* ptr = new employeeData;
+		ptr->employee_id = localId;
+		cout << endl << "Enter Employee Name: ";
+		cin >> ptr->employee_name;
+		cout << endl << "Enter Employee Address: ";
+		cin >> ptr->address;
+		cout << "Enter Employee Phone: ";
+		cin >> ptr->phone;
+		if (fptr == NULL)
+		{
+			ptr->nptr = NULL;
+			fptr = ptr;
+		}
+		else
+		{
+			employeeData* currentPtr = fptr;
+			while (currentPtr->nptr != NULL)
+			{
+				currentPtr = currentPtr->nptr;
+			}
+			currentPtr->nptr = ptr;
+			ptr->nptr = NULL;
+		}
+	}
+}
+int checkId(string id)
+{
+	employeeData* checkPtr = fptr;
+	while (checkPtr != NULL)
+	{
+		if (checkPtr->employee_id == id)
+		{
+			cout << endl << "Employee Exists as: " << checkPtr->employee_name << endl;
+			return 1;
+		}
+		checkPtr = checkPtr->nptr;
+	}
+	cout << "Employee not found." << endl;
+	return 0;
+}
