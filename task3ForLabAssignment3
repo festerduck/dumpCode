@@ -1,0 +1,106 @@
+#include <iostream>
+#include <ctime>
+#include <cstring>
+#pragma warning(disable : 4996)
+using namespace std;
+
+time_t now = time(0);
+string time()
+{
+	// current date/time based on current system
+	
+
+	// convert now to string form
+	char* dt = ctime(&now);
+
+	cout << "The local date and time is: " << dt << endl;
+
+	/*// convert now to tm struct for UTC
+	tm* gmtm = gmtime(&now);
+	dt = asctime(gmtm);
+	cout << "The UTC date and time is:" << dt << endl;
+	
+	cout << "Time in main is: " << time();
+	tm* ltm = localtime(&now);
+
+	cout << "Time: " << ltm->tm_hour << " : " << ltm->tm_min << " : " << ltm->tm_sec << endl;
+	cout << "Time: " << ltm->tm_hour << " : " << ltm->tm_min << " : " << ltm->tm_sec << endl;
+	*/
+	return dt;
+}
+
+struct vehicleAtt
+{
+	string
+		vehReg,
+		drvNam,
+		vehMak,
+		vehMod,
+		vehCol;
+	int vehTim = 0;
+	vehicleAtt* nptr;
+};
+vehicleAtt* ftpr = NULL;
+
+int addVeh();
+int changCol(char* color);
+
+int main() {
+	while (1)
+	{
+		cout << "1- Vehicle Entry" << endl
+			<< "2- Vehicle Exit" << endl
+			<< "3- Parking Fee Collected" << endl
+			<< "4- Parking Statistics" << endl;
+		int opt;
+		cin >> opt;
+		switch (opt)
+		{
+		case 1:
+		{
+			addVeh();
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	
+	
+	
+
+}
+
+int addVeh()
+{
+	cout << "<<--------ADDING VEHICLE-------->>" << endl;
+	vehicleAtt* ptr = new vehicleAtt;
+	ptr->nptr = NULL;
+	cout << "Enter Vehicle Registration Number: ";
+	cin >> ptr->vehReg;
+	cout << "Enter Driver Name: ";
+	cin >> ptr->drvNam;
+	cout << "Enter Vehicle Make: ";
+	cin >> ptr->vehMak;
+	cout << "Enter Vehicle Model: ";
+	cin >> ptr->vehMod;
+	cout << "Enter Vehicle Color: ";
+	char* tempCol = new char[10];
+	cin >> tempCol;
+	changCol(tempCol);
+	
+	return 0;
+}
+int changCol(char* color)
+{
+	for (size_t i = 0; i < 10; i++)
+	{
+		color[i] = tolower(color[i]);
+	}
+	if (color == "white")
+	{
+		cout << "Color is white." << endl;
+	}
+
+	return 1;
+}
